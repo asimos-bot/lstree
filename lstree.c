@@ -6,11 +6,12 @@
 #define MAX_PATH_SIZE 4096
 #define PADDING 2
 
-int print_tree(char* basepath, unsigned int offset, int is_last) {
+void print_tree(char* basepath, unsigned int offset, int is_last) {
     DIR *directory = opendir(basepath);
 
     if( directory == NULL ) {
-        return 1;
+        fprintf(stderr, "permission denied\n");
+        return;
     }
 
     char path[MAX_PATH_SIZE];
@@ -32,18 +33,20 @@ int print_tree(char* basepath, unsigned int offset, int is_last) {
             strcpy(path, basepath);
             strcat(path, "/");
             strcat(path, item->d_name);
-            if( print_tree(path, offset + PADDING, itemcur == nitems - 1) ) {
-                return 1;
-            }
-        } else {
+            print_tree(path, offset + PADDING, itemcur == nitems - 1); } else {
             printf("%s\n", item->d_name);
         }
     }
     closedir(directory);
-    return 0;
 }
 
-int main() {
-    printf(".\n");
-    return print_tree(".", 0, 1);
+void help() {
+    fprintf(stderr, "usage: lstree [DIR]\n");
+}
+
+int main(int argc, char** argv) {
+    char* basedirpath = argc < 2 ? "." : argv[1];
+    printf("%s\n", basedirpath);
+    print_tree(basedirpath, 0, 1);
+    return 0;
 }
