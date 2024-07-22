@@ -10,7 +10,7 @@ void print_tree(char* basepath, unsigned int offset, int is_last) {
     DIR *directory = opendir(basepath);
 
     if( directory == NULL ) {
-        fprintf(stderr, "permission denied\n");
+        fprintf(stderr, "\033[1m\033[31mcouldn't open\033[0m\n");
         return;
     }
 
