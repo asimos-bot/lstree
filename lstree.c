@@ -3,10 +3,10 @@
 #include <unistd.h>
 #include <string.h>
 
-#define MAX_PATH_SIZE 1000
+#define MAX_PATH_SIZE 4096
 #define PADDING 2
 
-int print_tree(char* basepath, unsigned int offset) {
+int print_tree(char* basepath, unsigned int offset, int is_last) {
     DIR *directory = opendir(basepath);
 
     if( directory == NULL ) {
@@ -32,7 +32,7 @@ int print_tree(char* basepath, unsigned int offset) {
             strcpy(path, basepath);
             strcat(path, "/");
             strcat(path, item->d_name);
-            if( print_tree(path, offset + PADDING) ) {
+            if( print_tree(path, offset + PADDING, itemcur == nitems - 1) ) {
                 return 1;
             }
         } else {
@@ -45,5 +45,5 @@ int print_tree(char* basepath, unsigned int offset) {
 
 int main() {
     printf(".\n");
-    return print_tree(".", 0);
+    return print_tree(".", 0, 1);
 }
